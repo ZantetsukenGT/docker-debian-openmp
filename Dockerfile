@@ -57,7 +57,5 @@ RUN \
 	ldconfig && \ 
 	rm -rf /tmp/pawncc
 
-COPY .bashrc /root
-
 WORKDIR /root
 CMD ["/bin/bash"]
