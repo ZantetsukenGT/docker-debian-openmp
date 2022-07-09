@@ -27,7 +27,7 @@ RUN \
 	mkdir -p /tmp/cmake && \ 
 	wget -q -O /tmp/cmake/cmake.sh https://cmake.org/files/v`expr "$CMAKE_VERSION" : '\([0-9][0-9]*\.[0-9][0-9]*\)'`/cmake-${CMAKE_VERSION}-linux-x86_64.sh && \ 
 	chmod +x /tmp/cmake/cmake.sh && \ 
-	./tmp/cmake/cmake.sh --prefix=/usr/local --exclude-subdir && \ 
+	/tmp/cmake/cmake.sh --prefix=/usr/local --exclude-subdir && \ 
 	rm -rf /tmp/cmake
 
 # vcpkg - install vcpkg, add to path and create a linux x86 static triplet file
