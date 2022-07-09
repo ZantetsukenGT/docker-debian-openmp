@@ -6,15 +6,18 @@ RUN dpkg --add-architecture i386 \
 	&& apt-get -qq install -y \
 		ca-certificates \
 		wget \
+		curl \
 		g++-multilib \
 		make \
 		git \
+		zip \
 		unzip \
 		vim \
 		less \
 		man \
-		libssl-dev:i386 \
-		libmariadb-dev:i386
+		pkg-config \
+		libmariadb-dev:i386 \
+		linux-headers-$(uname -r)
 
 # CMake
 RUN \ 
@@ -25,17 +28,17 @@ RUN \
 	./tmp/cmake/cmake.sh --prefix=/usr/local --exclude-subdir && \ 
 	rm -rf /tmp/cmake
 
-# Boost
-RUN \ 
-	BOOST_VERSION=1.79.0 && \ 
-	mkdir -p /tmp/boost && \ 
-	wget -q -O /tmp/boost/boost.tar.gz https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION}/source/boost_`echo $BOOST_VERSION | sed 's|\.|_|g'`.tar.gz && \ 
-	tar xfz /tmp/boost/boost.tar.gz -C /tmp/boost/ --strip-components=1 && \ 
-	cd /tmp/boost && \ 
-	./bootstrap.sh --prefix=/usr/local --with-libraries=system,chrono,thread,regex,date_time,atomic && \ 
-	./b2 variant=release link=static threading=multi address-model=32 runtime-link=shared -j2 -d0 install && \ 
-	cd - && \ 
-	rm -rf /tmp/boost
+# vcpkg - install vcpkg, add to path and create a linux x86 static triplet file
+ENV PATH=$PATH:/root/vcpkg
+RUN git clone https://github.com/Microsoft/vcpkg && \
+    cd vcpkg && \
+    ./bootstrap-vcpkg.sh && \
+    touch triplets/x86-linux-static.cmake && \
+    echo "set(VCPKG_TARGET_ARCHITECTURE x86)" >> triplets/x86-linux-static.cmake && \
+    echo "set(VCPKG_CRT_LINKAGE static)" >> triplets/x86-linux-static.cmake && \
+    echo "set(VCPKG_LIBRARY_LINKAGE static)" >> triplets/x86-linux-static.cmake && \
+    echo "set(VCPKG_CMAKE_SYSTEM_NAME Linux)" >> triplets/x86-linux-static.cmake && \
+    cd ..
 
 # open.mp server + includes
 RUN \ 
