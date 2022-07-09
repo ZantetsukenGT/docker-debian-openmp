@@ -1,5 +1,7 @@
 FROM debian:latest
 
+WORKDIR /root
+
 RUN dpkg --add-architecture i386 \
 	&& apt-get -qq update \
 	&& apt-get -qq upgrade -y \
@@ -60,5 +62,4 @@ RUN \
 	ldconfig && \ 
 	rm -rf /tmp/pawncc
 
-WORKDIR /root
 CMD ["/bin/bash"]
