@@ -3,9 +3,9 @@ FROM debian:latest
 WORKDIR /root
 
 RUN dpkg --add-architecture i386 \
-	&& apt-get -qq update \
-	&& apt-get -qq upgrade -y \
-	&& apt-get -qq install -y \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -qq update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -qq upgrade \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -qq install \
 		ca-certificates \
 		wget \
 		curl \
